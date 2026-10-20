@@ -6,3 +6,8 @@ node_modules/
 dist/
 frontend/.env
 .DS_Store
+
+# QA
+.pytest_cache/
+qa/.venv/
+qa/reports/
