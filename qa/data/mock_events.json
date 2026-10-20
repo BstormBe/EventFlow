@@ -1,0 +1,13 @@
+[
+  {
+    "id": 9001,
+    "title": "Evenement simule par le test",
+    "description": "Reponse injectee par page.route()",
+    "city": "Namur",
+    "venue": "Citadelle",
+    "starts_at": "2027-06-21T19:00:00Z",
+    "capacity": 100,
+    "status": "published",
+    "cover_color": "#1FD6A6"
+  }
+]
