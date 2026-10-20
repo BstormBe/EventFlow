@@ -10,3 +10,4 @@ pytest-playwright
 pytest-rerunfailures
 selenium
 allure-pytest
+pytest-xdist
