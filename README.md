@@ -269,6 +269,10 @@ SEED_BUGS=true docker compose up --build backend
 
 Bugs déjà disponibles : B1 (sur-réservation), B2 (plafond de billets contournable), B3 (IDOR), B4 (code promo expiré accepté), B5 (stock non libéré), B7 (écart d'arrondi), B9 (JWT sans expiration), B10 (injection SQL), B11 (réponse non conforme), B12 (bouton de paiement instable). Le détail et la reproduction de chacun se trouvent dans `docs/FIL_ROUGE_BUGS.md`. L'endpoint `GET /api/config` expose l'état du mode bug.
 
+## Projet de tests EventFlow-QA
+
+La branche `eventflow-qa` contient le projet de tests construit pendant les modules 9 à 11 (PyTest, Playwright, Selenium, Locust, GitHub Actions, Allure). Il se trouve dans le dossier `qa/`, le pipeline dans `.github/workflows/ci.yml`. Voir `qa/README.md`.
+
 ## Structure du dépôt
 
 ```
