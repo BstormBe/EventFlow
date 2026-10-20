@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      seed_bugs:
+        description: "Activer les bugs du fil rouge (true/false)"
+        required: false
+        default: "false"
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      SEED_BUGS: ${{ github.event.inputs.seed_bugs || 'false' }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Demarrer EventFlow
+        run: |
+          echo "Bugs du fil rouge : ${{ github.event.inputs.seed_bugs }}"
+          docker compose up -d --build
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Installer les dependances de test
+        run: |
+          pip install -r qa/requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Attendre que l'application soit prete
+        run: |
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:5173/api/health && exit 0
+            sleep 2
+          done
+          docker compose logs
+          exit 1
+
+      - name: Tests API
+        working-directory: qa
+        run: pytest tests/api --alluredir=reports/allure-results --junitxml=reports/junit-api.xml
+
+      - name: Tests UI Playwright
+        working-directory: qa
+        run: pytest tests/ui/playwright --alluredir=reports/allure-results
+
+      - name: Tests back-office Selenium
+        working-directory: qa
+        run: pytest tests/ui/selenium_backoffice --alluredir=reports/allure-results
+
+      - name: Rapport Allure
+        if: always()
+        working-directory: qa
+        run: npx --yes allure generate reports/allure-results -o reports/allure-report
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: rapports-qa
+          path: qa/reports/
