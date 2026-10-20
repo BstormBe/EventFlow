@@ -8,3 +8,5 @@ PyJWT
 pytest-html
 pytest-playwright
 pytest-rerunfailures
+selenium
+allure-pytest
