@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eventflow.test/schemas/event_detail.schema.json",
+  "title": "Detail d'un evenement",
+  "allOf": [{"$ref": "event.schema.json"}],
+  "type": "object",
+  "required": ["categories", "available"],
+  "properties": {
+    "available": {"type": "integer", "minimum": 0},
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "price_cents", "quota", "available"],
+        "properties": {
+          "id": {"type": "integer"},
+          "name": {"type": "string"},
+          "price_cents": {"type": "integer", "minimum": 0},
+          "quota": {"type": "integer", "minimum": 0},
+          "available": {"type": "integer", "minimum": 0}
+        }
+      }
+    }
+  }
+}
