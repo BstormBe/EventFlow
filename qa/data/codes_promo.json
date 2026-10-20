@@ -1,0 +1,6 @@
+[
+  {"code": "WELCOME10", "statut_attendu": 201, "remise_pct": 10, "regle": "RM4 - code valide"},
+  {"code": "VIP25", "statut_attendu": 201, "remise_pct": 25, "regle": "RM4 - code valide"},
+  {"code": "EXPIRED", "statut_attendu": 400, "remise_pct": null, "regle": "RM4 - code expire (B4)"},
+  {"code": "INCONNU", "statut_attendu": 404, "remise_pct": null, "regle": "code inexistant"}
+]

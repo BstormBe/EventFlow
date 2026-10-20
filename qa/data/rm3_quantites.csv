@@ -1,0 +1,7 @@
+cas,quantite,statut_attendu,commentaire
+P1,0,400,partition invalide (aucun billet)
+VL1,1,201,borne basse valide
+VL2,5,201,juste sous la borne haute
+VL3,6,201,borne haute valide (RM3)
+VL4,7,400,juste au-dessus de la borne haute (B2)
+P2,10,400,partition invalide (trop de billets)
