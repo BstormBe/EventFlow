@@ -1,0 +1,32 @@
+[project]
+name = "eventflow"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Kenny Sirichantho", email = "sirichantho.kenny@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "allure-pytest>=2.16.2",
+    "jsonschema>=4.26.0",
+    "psycopg2-binary>=2.9.13",
+    "pyjwt>=2.15.1",
+    "pytest>=9.2.0",
+    "pytest-html>=4.2.0",
+    "pytest-playwright>=0.10.0",
+    "pytest-rerunfailures>=16.7",
+    "pytest-xdist>=3.8.0",
+    "python-dotenv>=1.2.4",
+    "requests==2.31.0",
+    "ruff>=0.17.5",
+    "selenium>=4.53.0",
+    "sqlalchemy>=2.1.9",
+]
+
+[project.scripts]
+eventflow = "eventflow:main"
+
+[build-system]
+requires = ["uv_build>=0.12.14,<0.13.0"]
+build-backend = "uv_build"
