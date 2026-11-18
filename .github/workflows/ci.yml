@@ -16,6 +16,7 @@ jobs:
     env:
       SEED_BUGS: ${{ github.event.inputs.seed_bugs || 'false' }}
     steps:
+      
       - uses: actions/checkout@v7
 
       - name: Demarrer EventFlow
