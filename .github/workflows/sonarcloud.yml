@@ -1,56 +1,36 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# This workflow helps you trigger a SonarCloud analysis of your code and populates
-# GitHub Code Scanning alerts with the vulnerabilities found.
-# Free for open source project.
-
-# 1. Login to SonarCloud.io using your GitHub account
-
-# 2. Import your project on SonarCloud
-#     * Add your GitHub organization first, then add your repository as a new project.
-#     * Please note that many languages are eligible for automatic analysis,
-#       which means that the analysis will start automatically without the need to set up GitHub Actions.
-#     * This behavior can be changed in Administration > Analysis Method.
-#
-# 3. Follow the SonarCloud in-product tutorial
-#     * a. Copy/paste the Project Key and the Organization Key into the args parameter below
-#          (You'll find this information in SonarCloud. Click on "Information" at the bottom left)
-#
-#     * b. Generate a new token and add it to your Github repository's secrets using the name SONAR_TOKEN
-#          (On SonarCloud, click on your avatar on top-right > My account > Security
-#           or go directly to https://sonarcloud.io/account/security/)
-
-# Feel free to take a look at our documentation (https://docs.sonarcloud.io/getting-started/github/)
-# or reach out to our community forum if you need some help (https://community.sonarsource.com/c/help/sc/9)
-
-name: SonarCloud analysis
+name: SonarQube Cloud
 
 on:
-  push:
-    branches: [ "eventflow-qa" ]
-  pull_request:
-    branches: [ "eventflow-qa" ]
-  workflow_dispatch:
+    push:
+        branches: [eventflow-qa]   # plan Free : branche principale seulement
+    pull_request:
+        types: [opened, synchronize, reopened]
 
 permissions:
-  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+    contents: read
 
 jobs:
-  Analysis:
-    runs-on: ubuntu-latest
+    sonar:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+          with:
+            fetch-depth: 0              # historique complet : blame et nouveau code
+            persist-credentials: false
+        - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+          with:
+            python-version: "3.12"
 
-    steps:
-      - name: Recuperation du code source 
-        uses: actions/checkout@v7
-        with: { fetch-depth: 0 }
-        
-      - name: Analyze with SonarCloud
-
-        # You can pin the exact commit or the version.
-        # uses: SonarSource/sonarcloud-github-action@v2.2.0
-        uses: SonarSource/sonarqube-scan-action@59202af334b4ba7b5db01b701b8e79f8b3bef0f4
-        env:
-          SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}  
+        - name: Rapports Ruff et Bandit
+          run: |
+            pip install --only-binary :all: ruff==0.17.4 bandit==1.9.4
+            # Module racine (backend) : rapports a la racine
+            ruff check backend/app --exit-zero --output-format json -o ruff-report.json
+            bandit -r backend/app -f json -o bandit-report.json --exit-zero
+            # Module qa (detecte par Sonar) : rapports dans qa/
+            cd qa
+            ruff check . --exit-zero --output-format json -o ruff-report.json
+            bandit -r utils -f json -o bandit-report.json --exit-zero
+        - uses: SonarSource/sonarqube-scan-action@59202af334b4ba7b5db01b701b8e79f8b3bef0f4 # v8.5.0
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
