@@ -1,4 +1,5 @@
 """Regles metier du tunnel de reservation (RM1, RM3, RM4) - tests pilotes par les donnees."""
+
 import pytest
 
 from utils.config import CARD_DECLINED, CARD_OK
@@ -22,7 +23,9 @@ def test_rm3_max_six_tickets_per_order(new_client_api, qa_event, case):
 @pytest.mark.parametrize("promo", PROMO_CASES, ids=[p["code"] for p in PROMO_CASES])
 def test_rm4_promo_codes(new_client_api, qa_event, promo):
     plein = category(qa_event, "Plein tarif")
-    r = new_client_api.create_order(qa_event["id"], [{"category_id": plein["id"], "quantity": 2}], promo_code=promo["code"])
+    r = new_client_api.create_order(
+        qa_event["id"], [{"category_id": plein["id"], "quantity": 2}], promo_code=promo["code"]
+    )
     assert r.status_code == promo["statut_attendu"], r.text
     if promo["remise_pct"] is not None:
         expected = round(2 * plein["price_cents"] * (100 - promo["remise_pct"]) / 100)

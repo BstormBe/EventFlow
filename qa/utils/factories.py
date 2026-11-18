@@ -1,6 +1,7 @@
 """Fabriques de donnees de test : evenements et utilisateurs isoles par execution."""
+
 import uuid
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from utils.api_client import ApiClient
 
@@ -16,7 +17,7 @@ def create_event(admin: ApiClient, status="published", early_quota=50, full_quot
         "description": "Evenement cree par la suite de tests automatisee",
         "city": "Bruxelles",
         "venue": "Salle QA",
-        "starts_at": (datetime.utcnow() + timedelta(days=45)).isoformat(),
+        "starts_at": (datetime.now(UTC).replace(tzinfo=None) + timedelta(days=45)).isoformat(),
         "capacity": early_quota + full_quota + vip_quota,
         "status": status,
         "categories": [

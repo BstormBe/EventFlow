@@ -22,11 +22,14 @@ def test_login_with_valid_credentials_returns_bearer_token(anonymous_api):
     assert body["access_token"].count(".") == 2  # format JWT header.payload.signature
 
 
-@pytest.mark.parametrize("email, password", [
-    (config.CLIENT_EMAIL, "mauvais-mot-de-passe"),
-    ("inconnu@eventflow.test", "client1234"),
-    (config.CLIENT_EMAIL, ""),
-])
+@pytest.mark.parametrize(
+    ("email", "password"),
+    [
+        (config.CLIENT_EMAIL, "mauvais-mot-de-passe"),
+        ("inconnu@eventflow.test", "client1234"),
+        (config.CLIENT_EMAIL, ""),
+    ],
+)
 def test_login_with_invalid_credentials_is_rejected(anonymous_api, email, password):
     r = anonymous_api.login(email, password)
     assert r.status_code in (401, 422)
@@ -54,7 +57,9 @@ def test_me_returns_current_user(client_api):
 
 def test_profile_update_cannot_change_email_or_role(new_client_api):
     before = new_client_api.get("/api/auth/me").json()
-    r = new_client_api.patch("/api/auth/me", json={"full_name": "Nouveau Nom", "email": "pirate@x.test", "role": "admin"})
+    r = new_client_api.patch(
+        "/api/auth/me", json={"full_name": "Nouveau Nom", "email": "pirate@x.test", "role": "admin"}
+    )
     assert r.status_code == 200
     after = r.json()
     assert after["full_name"] == "Nouveau Nom"

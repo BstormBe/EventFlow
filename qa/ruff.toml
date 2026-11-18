@@ -1,0 +1,13 @@
+ line-length = 120
+ target-version = "py312"
+[lint]
+extend-select = ["S", "T20", "N", "PT"] # règles de sécurité
+ignore = ["S101"] # assert permis…
+[lint.per-file-ignores]
+"tests/**" = ["S105"] # mots de passe de test
+# locust : les print affichent le verdict du test de charge (detection de la survente B1)
+"tests/performance/*" = ["T201"]
+# Selenium : "EC" est l'alias standard de expected_conditions dans la documentation officielle
+"tests/ui/selenium_backoffice/*" = ["N812"]
+# Mot de passe par defaut des utilisateurs de test generes a la volee, pas un vrai secret
+"utils/factories.py" = ["S107"]

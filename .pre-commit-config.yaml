@@ -1,0 +1,14 @@
+# Hooks executes avant chaque commit (installation : pre-commit install)
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Meme version que le ruff local et que la CI Sonar (ruff==0.17.4)
+    rev: v0.17.4
+    hooks:
+      # Lint : corrige automatiquement ce qui peut l'etre, bloque le commit sinon
+      - id: ruff-check
+        args: [--fix]
+        # Perimetre QA uniquement : le backend n'est pas gere par l'equipe QA
+        files: ^qa/
+      # Formatage du code (equivalent de black)
+      - id: ruff-format
+        files: ^qa/
