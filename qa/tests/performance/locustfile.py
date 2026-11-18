@@ -7,6 +7,7 @@ Lancement (application demarree) :
 
 A la fin, le script verifie en base qu'aucune categorie n'a ete survendue.
 """
+
 import uuid
 
 import requests
@@ -20,13 +21,23 @@ FLASH = {}
 @events.test_start.add_listener
 def create_flash_sale(environment, **_):
     host = environment.host or config.API_URL
-    token = requests.post(f"{host}/api/auth/token", timeout=10, data={
-        "username": config.ADMIN_EMAIL, "password": config.ADMIN_PASSWORD}).json()["access_token"]
-    r = requests.post(f"{host}/api/admin/events", timeout=10, headers={"Authorization": f"Bearer {token}"}, json={
-        "title": f"Flash sale {uuid.uuid4().hex[:6]}", "city": "Bruxelles", "venue": "Forest National",
-        "starts_at": "2027-01-15T20:00:00", "capacity": 20, "status": "published",
-        "categories": [{"name": "Fosse", "price_cents": 4900, "quota": 20}],
-    })
+    token = requests.post(
+        f"{host}/api/auth/token", timeout=10, data={"username": config.ADMIN_EMAIL, "password": config.ADMIN_PASSWORD}
+    ).json()["access_token"]
+    r = requests.post(
+        f"{host}/api/admin/events",
+        timeout=10,
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "title": f"Flash sale {uuid.uuid4().hex[:6]}",
+            "city": "Bruxelles",
+            "venue": "Forest National",
+            "starts_at": "2027-01-15T20:00:00",
+            "capacity": 20,
+            "status": "published",
+            "categories": [{"name": "Fosse", "price_cents": 4900, "quota": 20}],
+        },
+    )
     event = r.json()
     FLASH["event_id"] = event["id"]
     FLASH["category_id"] = event["categories"][0]["id"]
@@ -55,8 +66,12 @@ class Buyer(HttpUser):
 
     def on_start(self):
         email = f"load-{uuid.uuid4().hex[:10]}@example.com"
-        self.client.post("/api/auth/register", json={"email": email, "password": "Passw0rd!"}, name="/api/auth/register")
-        r = self.client.post("/api/auth/token", data={"username": email, "password": "Passw0rd!"}, name="/api/auth/token")
+        self.client.post(
+            "/api/auth/register", json={"email": email, "password": "Passw0rd!"}, name="/api/auth/register"
+        )
+        r = self.client.post(
+            "/api/auth/token", data={"username": email, "password": "Passw0rd!"}, name="/api/auth/token"
+        )
         self.client.headers["Authorization"] = f"Bearer {r.json()['access_token']}"
 
     @task(3)
@@ -69,11 +84,20 @@ class Buyer(HttpUser):
 
     @task(1)
     def buy(self):
-        with self.client.post("/api/orders", name="/api/orders", catch_response=True, json={
-            "event_id": FLASH["event_id"], "items": [{"category_id": FLASH["category_id"], "quantity": 2}],
-        }) as r:
+        with self.client.post(
+            "/api/orders",
+            name="/api/orders",
+            catch_response=True,
+            json={
+                "event_id": FLASH["event_id"],
+                "items": [{"category_id": FLASH["category_id"], "quantity": 2}],
+            },
+        ) as r:
             if r.status_code == 409:
                 r.success()  # stock epuise : comportement attendu, pas une erreur de performance
             elif r.status_code == 201:
-                self.client.post(f"/api/orders/{r.json()['id']}/pay", name="/api/orders/[id]/pay", json={
-                    "card_number": config.CARD_OK, "exp_month": 12, "exp_year": 2030, "cvc": "123"})
+                self.client.post(
+                    f"/api/orders/{r.json()['id']}/pay",
+                    name="/api/orders/[id]/pay",
+                    json={"card_number": config.CARD_OK, "exp_month": 12, "exp_year": 2030, "cvc": "123"},
+                )

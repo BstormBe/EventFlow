@@ -1,4 +1,5 @@
 """Validation de reponses JSON contre les schemas du dossier qa/schemas."""
+
 import json
 from pathlib import Path
 

@@ -1,4 +1,5 @@
 """Configuration centrale des tests (lue depuis qa/.env ou l'environnement)."""
+
 import os
 
 from dotenv import load_dotenv
