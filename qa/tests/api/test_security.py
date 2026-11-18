@@ -1,4 +1,5 @@
 """Tests de securite inspires de l'OWASP API Security Top 10 (2023)."""
+
 import jwt
 import pytest
 

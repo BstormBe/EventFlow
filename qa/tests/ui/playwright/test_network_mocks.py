@@ -1,4 +1,5 @@
 """Isoler l'interface du back-end en interceptant les appels reseau (page.route)."""
+
 import re
 
 import pytest
