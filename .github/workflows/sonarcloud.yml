@@ -1,8 +1,8 @@
 name: SonarQube Cloud
 
 on:
-    push:
-        branches: [eventflow-qa]   # plan Free : branche principale seulement
+    # push:
+    #    branches: [eventflow-qa]   # plan Free : branche principale seulement
     pull_request:
         types: [opened, synchronize, reopened]
 
