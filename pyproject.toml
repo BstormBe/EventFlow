@@ -9,6 +9,8 @@ authors = [
 requires-python = ">=3.14"
 dependencies = [
     "allure-pytest>=2.16.2",
+    "bandit>=1.9.4",
+    "commitizen>=4.19.4",
     "jsonschema>=4.26.0",
     "pre-commit>=4.7.0",
     "psycopg2-binary>=2.9.13",
@@ -23,6 +25,8 @@ dependencies = [
     "ruff>=0.17.5",
     "selenium>=4.53.0",
     "sqlalchemy>=2.1.9",
+    "uv-audit>=0.1.9",
+    "zizmor>=1.33.1",
 ]
 
 [project.scripts]
